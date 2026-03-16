@@ -1,0 +1,61 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity contador_sincrono3op is
+    Port ( clk : in STD_LOGIC;
+           reset : in STD_LOGIC;
+           q : out STD_LOGIC_VECTOR (3 downto 0));
+end contador_sincrono3op;
+
+architecture Behavioral of contador_sincrono3op is
+
+    type state_type is (s0, s1, s2, s3, s4, s5, s6, s7);
+    signal state, next_state: state_type;
+
+begin
+
+    process(clk, reset)
+    begin
+        if reset = '1' then
+            state <= s0;
+        elsif rising_edge(clk) then
+            state <= next_state;
+        end if;
+    end process;
+
+    process(state)
+    begin
+        case state is
+            when s0 =>
+                next_state <= s1;
+                q <= "0001"; -- 1
+            when s1 =>
+                next_state <= s2;
+                q <= "0111"; -- 7
+            when s2 =>
+                next_state <= s3;
+                q <= "0101"; -- 5
+            when s3 =>
+                next_state <= s4;
+                q <= "0011"; -- 3
+            when s4 =>
+                next_state <= s5;
+                q <= "0011"; -- 3
+            when s5 =>
+                next_state <= s6;
+                q <= "0000"; -- 0
+            when s6 =>
+                next_state <= s7;
+                q <= "0101"; -- 5
+            when s7 =>
+                next_state <= s0;
+                q <= "0101"; -- 5
+            when others =>
+                next_state <= s0;
+                q <= "0001"; -- 1
+        end case;
+    end process;
+
+end Behavioral;
